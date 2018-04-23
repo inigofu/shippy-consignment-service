@@ -19,12 +19,6 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
-import (
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
-	context "golang.org/x/net/context"
-)
-
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -169,79 +163,6 @@ func init() {
 	proto.RegisterType((*Container)(nil), "consignment.Container")
 	proto.RegisterType((*GetRequest)(nil), "consignment.GetRequest")
 	proto.RegisterType((*Response)(nil), "consignment.Response")
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ client.Option
-var _ server.Option
-
-// Client API for ConsignmentService service
-
-type ConsignmentServiceClient interface {
-	Create(ctx context.Context, in *Consignment, opts ...client.CallOption) (*Response, error)
-	Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*Response, error)
-}
-
-type consignmentServiceClient struct {
-	c           client.Client
-	serviceName string
-}
-
-func NewConsignmentServiceClient(serviceName string, c client.Client) ConsignmentServiceClient {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(serviceName) == 0 {
-		serviceName = "consignment"
-	}
-	return &consignmentServiceClient{
-		c:           c,
-		serviceName: serviceName,
-	}
-}
-
-func (c *consignmentServiceClient) Create(ctx context.Context, in *Consignment, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "ConsignmentService.Create", in)
-	out := new(Response)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consignmentServiceClient) Get(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "ConsignmentService.Get", in)
-	out := new(Response)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for ConsignmentService service
-
-type ConsignmentServiceHandler interface {
-	Create(context.Context, *Consignment, *Response) error
-	Get(context.Context, *GetRequest, *Response) error
-}
-
-func RegisterConsignmentServiceHandler(s server.Server, hdlr ConsignmentServiceHandler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&ConsignmentService{hdlr}, opts...))
-}
-
-type ConsignmentService struct {
-	ConsignmentServiceHandler
-}
-
-func (h *ConsignmentService) Create(ctx context.Context, in *Consignment, out *Response) error {
-	return h.ConsignmentServiceHandler.Create(ctx, in, out)
-}
-
-func (h *ConsignmentService) Get(ctx context.Context, in *GetRequest, out *Response) error {
-	return h.ConsignmentServiceHandler.Get(ctx, in, out)
 }
 
 func init() { proto.RegisterFile("proto/consignment/consignment.proto", fileDescriptor0) }
