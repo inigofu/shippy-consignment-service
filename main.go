@@ -89,7 +89,7 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		}
 
 		// Note this is now uppercase (not entirely sure why this is...)
-		token := meta["Token"]
+		token := meta["Authorization"]
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
